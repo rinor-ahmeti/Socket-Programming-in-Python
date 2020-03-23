@@ -43,6 +43,25 @@ def GAME():
         numrat.append(i)
     return numrat
 
+def CONVERT(tipi,vlera):
+    if vlera<0:
+        print("Vlera e dhene eshte negative. Shkojme me vleren absolute")
+        vlera=abs(vlera)
+    if tipi=='cmToFeet':
+        vlera=vlera/float(30.48) 
+        return str(vlera) + ' ft'
+    elif tipi =='FeetToCm':
+        vlera=vlera*float(30.48) 
+        return str(vlera) + ' cm'
+    elif tipi=='kmToMiles':
+        vlera=vlera/float(1.609)
+        return str(vlera) + ' miles'
+    elif tipi=='MileToKm':
+        vlera=vlera*float(1.609) 
+        return str(vlera) + ' km'
+    else:
+        print('Argumente jovalide!')
+
 host = 'localhost'
 port = 13000
 
