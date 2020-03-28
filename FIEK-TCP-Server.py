@@ -54,27 +54,32 @@ def GAME():
     return f'{numrat}'
 
 
-def CONVERT(tipi, vlera):
-    if vlera < 0:
-        print("Vlera e dhene eshte negative. Shkojme me vleren absolute")
-        vlera = abs(vlera)
+def CONVERT(tipi, vlera2):
+    vlera = float(vlera2)
     if tipi.upper().strip() == 'CMTOFEET':
-        vlera = vlera/float(30.48)
-        return f'{vlera} ft'
+        return vlera/30.48
     elif tipi.upper().strip() == 'FEETTOCM':
-        vlera = vlera*float(30.48)
-        return f'{vlera} cm'
+        return vlera*30.48
     elif tipi.upper().strip()== 'KMTOMILES':
-        vlera = vlera/float(1.609)
-        return f'{vlera} miles'
+        return vlera/1.609
     elif tipi.upper().strip()== 'MILETOKM':
-        vlera = vlera*float(1.609)
-        return f'{vlera} km' 
+        return vlera*1.609
     else:
         return f'Argumente jovalide!'
 
+def GCF(a,b):
+    a=float(a)
+    b=float(b)
+    i=1
+    i = float(i)
+    while i <=a and i <=b:
+        if a%i == 0 and b % i == 0:
+            factor = i
+        i=i+1
+    return (float)(factor)
 
-def menu(kerkesa,connection): ## REVERSE ADI 0 edhe antari. 0 REVESR, ANTARI ADI
+
+def menu(kerkesa,connection): 
     try:
         request = kerkesa.split()
         serverResponse = ""
@@ -94,12 +99,14 @@ def menu(kerkesa,connection): ## REVERSE ADI 0 edhe antari. 0 REVESR, ANTARI ADI
             serverResponse = GAME()
         elif request[0] == 'CONVERT':
             serverResponse = CONVERT(request[1],request[2])
+        elif request[0] == 'GCF':
+            serverResponse = GCF(request[1],request[2])
         else: 
             serverResponse = 'Kerkesa juaj per serverin eshte invalide.'
-        connection.sendall(str.encode(serverResponse))
+        str(connection.sendall(str.encode(serverResponse)))
     except:
         serverResponse = 'Gabim ne server.'
-        connection.sendall(str.encode(serverResponse))
+        str(connection.sendall(str.encode(serverResponse)))
    
 def multithread(connection):
     while True:
@@ -108,9 +115,11 @@ def multithread(connection):
             break
         menu(data, connection)
     connection.close()
+
+
+
 host = 'localhost'
 port = 13000
-
 server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 server.bind((host,port))
 
