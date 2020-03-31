@@ -3,7 +3,19 @@ import socket
 import datetime
 import threading
 from _thread import *
+import re 
+import platform
 
+def CheckEmail(email):
+
+    regex = '^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.+-]'
+    if re.search(regex,email):
+        return f'Emaili juaj {email} eshte valid!'
+    else:
+        return f'Emaili juaj nuk eshte valid!'
+
+def SERVERINFO():
+    return f"\nIP Address: {address[0]}\nPORT: {address[1]}\nHOSTNAME: {platform.node()}\nOS: {platform.platform()}"
 
 def IPADDRESS():
     return f'IP Adresa e juaj eshte: {address[0]}'
@@ -81,26 +93,30 @@ def GCF(a,b):
 def menu(kerkesa): 
         request = kerkesa.split()
         serverResponse = ""
-        if request[0] == 'IPADDRESS':
+        if request[0].upper() == 'IPADDRESS':
             serverResponse = IPADDRESS()
-        elif request[0] == 'PORT':
+        elif request[0].upper() == 'PORT':
             serverResponse = PORT()
-        elif request[0] == 'COUNT':
+        elif request[0].upper() == 'COUNT':
             serverResponse = COUNT(request[1]) 
-        elif request[0] == 'REVERSE':
+        elif request[0].upper() == 'REVERSE':
             serverResponse = REVERSE(request[1])
-        elif request[0] == 'PALINDROME':
+        elif request[0].upper() == 'PALINDROME':
             serverResponse = PALINDROME(request[1])
-        elif request[0] == 'TIME':
+        elif request[0].upper() == 'TIME':
             serverResponse = TIME()
-        elif request[0] == 'GAME':
+        elif request[0].upper() == 'GAME':
             serverResponse = GAME()
-        elif request[0] == 'CONVERT':
+        elif request[0].upper() == 'CONVERT':
             serverResponse = CONVERT(request[1],request[2])
-        elif request[0] == 'GCF':
+        elif request[0].upper() == 'GCF':
             serverResponse = GCF(request[1],request[2])
+        elif request[0].upper() == 'SERVERINFO':
+            serverResponse = SERVERINFO()
+        elif request[0].upper() == 'CHECKEMAIL':
+            serverResponse = CheckEmail(request[1])
         else: 
-            serverResponse = 'Kerkesa juaj per serverin eshte invalide.'
+           serverResponse = 'Kerkesa juaj nuk eshte valide.'
         return (str)(serverResponse)
    
 

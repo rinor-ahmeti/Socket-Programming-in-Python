@@ -2,16 +2,29 @@ import numpy as np
 import socket
 import datetime
 import threading
+import pandas as pd 
+import platform
 from _thread import *
+import re
 
+def CheckEmail(email):
+
+    regex = '^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.+-]'
+    if re.search(regex,email):
+        return f'Emaili juaj {email} eshte valid!'
+    else:
+        return f'Emaili juaj nuk eshte valid!'
 
 def IPADDRESS():
     return f'IP Adresa e juaj eshte: {address[0]}'
 
-
 def PORT():
     return f'PORTI I KLIENTIT ESHTE: {address[1]}'
 
+def SERVERINFO():
+    data = {'IPADDRESS': address[0], 'PORT': address[1], 'HOSTNAME': platform.node(), 'OS/VERSION': platform.platform()}  
+    return f"\nIP Address: {address[0]}\nPORT: {address[1]}\nHOSTNAME: {platform.node()}\nOS: {platform.platform()}"
+    
 
 def COUNT(fjala):
     bashketingulloret = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k',
@@ -19,24 +32,34 @@ def COUNT(fjala):
     zanoret = ['a', 'e', 'i', 'o', 'u', 'y']
     cons = 0
     vow = 0
-    for i in fjala.lower():
-        if i in bashketingulloret:
+    request = str(fjala[1::]).lower()
+    for i in range(0,len(request)):
+        if request[i] in bashketingulloret:
             vow = vow+1
-        elif i in zanoret:
+        elif request[i] in zanoret:
             cons = cons+1
-    return f'Ne fjalen {fjala} kemi {vow} bashketingullore dhe {cons} zanore'
+    return f'Ne fjalen e dhene kemi {vow} bashketingullore dhe {cons} zanore'
 
 
-def REVERSE(fjala):
-    fjala2 = ''
-    for i in fjala:
-        fjala2 = fjala2 + i
-    fjala2 = fjala2[::-1]
-    return fjala2
+def REVERSE(fjala): 
+    #newWord = str(fjala[1:])
+    #return ' '.join([word[::-1] for word in 
+    #                 newWord.split(' ')])
+   
+    fjala2 = fjala[1::]
+    for i in fjala2:
+        word = fjala2[::-1] + ' '
+    return word
+  
+    # fjala2 = str(fjala[1::]).split(" ")
+    # output = ''
+    # for i in fjala2:
+    #     output = i[::-1] + ' '
+    # return output.strip()
 
 
 def PALINDROME(fjala):
-    if fjala == REVERSE(fjala):
+    if fjala == reversed(fjala):
         return f'Eshte palindrom!'
     else:
         return f'Nuk eshte palindrom!'
@@ -83,39 +106,45 @@ def menu(kerkesa,connection):
     try:
         request = kerkesa.split()
         serverResponse = ""
-        if request[0] == 'IPADDRESS':
+        if request[0].upper() == 'IPADDRESS':
             serverResponse = IPADDRESS()
-        elif request[0] == 'PORT':
+        elif request[0].upper() == 'PORT':
             serverResponse = PORT()
-        elif request[0] == 'COUNT':
-            serverResponse = COUNT(request[1]) 
-        elif request[0] == 'REVERSE':
-            serverResponse = REVERSE(request[1])
-        elif request[0] == 'PALINDROME':
+        elif request[0].upper() == 'COUNT':
+            serverResponse = COUNT(request) 
+        elif request[0].upper() == 'REVERSE':
+            serverResponse = REVERSE(request)
+        elif request[0].upper() == 'PALINDROME':
             serverResponse = PALINDROME(request[1])
-        elif request[0] == 'TIME':
+        elif request[0].upper() == 'TIME':
             serverResponse = TIME()
-        elif request[0] == 'GAME':
+        elif request[0].upper() == 'GAME':
             serverResponse = GAME()
-        elif request[0] == 'CONVERT':
+        elif request[0].upper() == 'CONVERT':
             serverResponse = CONVERT(request[1],request[2])
-        elif request[0] == 'GCF':
+        elif request[0].upper() == 'GCF':
             serverResponse = GCF(request[1],request[2])
+        elif request[0].upper() == 'SERVERINFO':
+            serverResponse = SERVERINFO()
+        elif request[0].upper() == 'CHECKEMAIL':
+            serverResponse = CheckEmail(request[1])
         else: 
-            serverResponse = 'Kerkesa juaj per serverin eshte invalide.'
+            serverResponse = 'Kerkesa juaj eshte invalide.'
         str(connection.sendall(str.encode(serverResponse)))
     except:
         serverResponse = 'Gabim ne server.'
         str(connection.sendall(str.encode(serverResponse)))
    
 def multithread(connection):
-    while True:
-        data = connection.recv(128).decode()
-        if not data:
-            break
-        menu(data, connection)
-    connection.close()
-
+    try:
+        while True:
+            data = connection.recv(128).decode()
+            if not data:
+                break
+            menu(data, connection)
+        connection.close()
+    except:
+        print("Ka ndodhur nje gabim.")
 
 
 host = 'localhost'

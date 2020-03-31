@@ -1,7 +1,17 @@
 import socket
 
-serverName = 'localhost'
-serverPort = 13000
+serverName = input("Shenoni adresen e serverit apo leni zbrazet per default:")
+serverPort = ''
+try:
+    serverPort = (int)(input("Shkruajeni numrin e portit apo leni zbrazet per default:"))
+except:
+    raise Exception("Gabim! Porti i dhene duhet te jete diskret!")
+if serverName=='':
+    serverName='localhost'
+
+if serverPort == '':
+    serverPort = 13000
+
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 pair = (serverName,serverPort)
