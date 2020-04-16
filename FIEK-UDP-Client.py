@@ -1,16 +1,25 @@
 import socket
+import re
+import keyboard 
+
+def isDigit(number):
+    try:
+       int(number)
+       return True
+    except:
+        raise ValueError("Jepni nje numer diskret!")
+        
 
 serverName = input("Shenoni adresen e serverit apo leni zbrazet per default:")
-serverPort = ''
-try:
-    serverPort = (int)(input("Shkruajeni numrin e portit apo leni zbrazet per default:"))
-except:
-    raise Exception("Gabim! Porti i dhene duhet te jete diskret!")
-if serverName=='':
+serverPort = input("Shenoni portin e serverit apo leni zbrazet per default:")
+if serverName=='' or serverName=='localhost':
     serverName='localhost'
-
-if serverPort == '':
+else:
+    raise('Ju lutem qendroni ne localhost!')
+if serverPort == '' or int(serverPort) == 13000:
     serverPort = 13000
+else:
+    raise('Ju lutem jepni portin e sakte.')
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 pair = (serverName,serverPort)
@@ -19,13 +28,15 @@ pair = (serverName,serverPort)
 while True:
     try:
         kerkesa = input("Shenoni JO per ta ndalur programin.\nShenoni kerkesen per serverin:")
+        
         if kerkesa.upper()=='JO':
             print("Keni dalur me sukses nga serveri.")
             break
         elif (len(kerkesa.encode()) > 128):
             print("Kerkesa juaj eshte me e madhe se 128 bytes(1024 bits).")
             continue
-        elif (kerkesa == ""):
+        elif (kerkesa.strip() == ""):
+            print("Serveri jone pranon edhe kerkesa boshe :)")
             continue
         s.sendto(str.encode(kerkesa),pair)
         data = s.recvfrom(128) 

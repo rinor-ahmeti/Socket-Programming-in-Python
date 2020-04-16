@@ -6,6 +6,38 @@ from _thread import *
 import re 
 import platform
 
+def isDigit(number):
+    try:
+       int(number)
+       return True
+    except:
+        return False
+        raise ValueError("Jepni nje numer diskret!")
+
+def ARMSTRONG(number):
+   
+    if not isDigit(number):
+        return f'Ju lutem jepni nje numer!'
+    shuma = 0
+    number=(int)(number)
+    temp = number
+    while temp > 0:
+        digit = temp % 10
+        shuma = shuma + digit**3
+        temp = temp//10
+
+    if number == shuma:
+        return f'{number} eshte numer i Armstrongut'
+    else: 
+        return f'{number} nuk eshte numer i Armstrongut'
+
+def shuma(number):
+    s=0
+    number=(int)(number)
+    for i in range(0,number+1):
+        s=s+i 
+    return f'Shuma e {number} numrave te pare duke perfshire edhe {number} eshte: {(str)(s)}'
+
 def CheckEmail(email):
 
     regex = '^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.+-]'
@@ -15,7 +47,7 @@ def CheckEmail(email):
         return f'Emaili juaj nuk eshte valid!'
 
 def SERVERINFO():
-    return f"\nIP Address: {address[0]}\nPORT: {address[1]}\nHOSTNAME: {platform.node()}\nOS: {platform.platform()}"
+    return f"IP Address: {address[0]} PORT: {address[1]} HOSTNAME: {platform.node()} OS: {platform.platform()}"
 
 def IPADDRESS():
     return f'IP Adresa e juaj eshte: {address[0]}'
@@ -31,24 +63,29 @@ def COUNT(fjala):
     zanoret = ['a', 'e', 'i', 'o', 'u', 'y']
     cons = 0
     vow = 0
-    for i in fjala.lower():
-        if i in bashketingulloret:
+    request = str(fjala[1::]).lower()
+    for i in range(0,len(request)):
+        if request[i] in bashketingulloret:
             vow = vow+1
-        elif i in zanoret:
+        elif request[i] in zanoret:
             cons = cons+1
-    return f'Ne fjalen {fjala} kemi {vow} bashketingullore dhe {cons} zanore'
+    return f'Ne fjalen e dhene kemi {vow} bashketingullore dhe {cons} zanore'
 
 
-def REVERSE(fjala):
-    fjala2 = ''
-    for i in fjala:
-        fjala2 = fjala2 + i
-    fjala2 = fjala2[::-1]
-    return fjala2
+def REVERSE(input):
+    words = input
+    output = ''
+    for word in words:
+        for c in reversed(word):
+            output += c
+        output += ' '    
+    reverseword = output[0:8]
+    return (str)(output.rstrip().replace(reverseword,''))
 
 
 def PALINDROME(fjala):
-    if fjala == REVERSE(fjala):
+    fjala2 = fjala[::-1]
+    if fjala.upper()==fjala2.upper():
         return f'Eshte palindrom!'
     else:
         return f'Nuk eshte palindrom!'
@@ -59,10 +96,11 @@ def TIME():
 
 
 def GAME():
-    nums = np.random.randint(1, 35, 5)
+    numz = np.random.choice(range(35),5,replace=False)
     numrat = []
-    for i in nums:
+    for i in numz:
         numrat.append(i)
+    numrat.sort()
     return f'{numrat}'
 
 
@@ -72,9 +110,9 @@ def CONVERT(tipi, vlera2):
         return vlera/30.48
     elif tipi.upper().strip() == 'FEETTOCM':
         return vlera*30.48
-    elif tipi.upper().strip()== 'KMTOMILES':
+    elif tipi.upper().strip() == 'KMTOMILES':
         return vlera/1.609
-    elif tipi.upper().strip()== 'MILETOKM':
+    elif tipi.upper().strip() == 'MILETOKM':
         return vlera*1.609
     else:
         return f'Argumente jovalide!'
@@ -90,7 +128,9 @@ def GCF(a,b):
         i=i+1
     return (float)(factor)
 
+
 def menu(kerkesa): 
+    try:    
         request = kerkesa.split()
         serverResponse = ""
         if request[0].upper() == 'IPADDRESS':
@@ -98,9 +138,9 @@ def menu(kerkesa):
         elif request[0].upper() == 'PORT':
             serverResponse = PORT()
         elif request[0].upper() == 'COUNT':
-            serverResponse = COUNT(request[1]) 
+            serverResponse = COUNT(request) 
         elif request[0].upper() == 'REVERSE':
-            serverResponse = REVERSE(request[1])
+            serverResponse = REVERSE(request)
         elif request[0].upper() == 'PALINDROME':
             serverResponse = PALINDROME(request[1])
         elif request[0].upper() == 'TIME':
@@ -115,11 +155,15 @@ def menu(kerkesa):
             serverResponse = SERVERINFO()
         elif request[0].upper() == 'CHECKEMAIL':
             serverResponse = CheckEmail(request[1])
+        elif request[0].upper() == 'SHUMA':
+            serverResponse = shuma(request[1])
+        elif request[0].upper() == 'ARMSTRONG':
+            serverResponse = ARMSTRONG(request[1])
         else: 
-           serverResponse = 'Kerkesa juaj nuk eshte valide.'
+           serverResponse = 'Kerkese jo valide.'
         return (str)(serverResponse)
-   
-
+    except:  
+        return f'Gabim ne server.'
 
 host = 'localhost'
 port = 13000
